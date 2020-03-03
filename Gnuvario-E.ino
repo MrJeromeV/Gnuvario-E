@@ -1571,8 +1571,6 @@ void loop() {
     SerialPort.println(currentalti);
     SerialPort.print("Kalman Vario : ");
     SerialPort.println(currentvario);
-
-    aglManager.setAlti(currentalti);
 #endif //DATA_DEBUG
 
     /* set screen */
@@ -1595,7 +1593,12 @@ void loop() {
  //   SerialPort.println(currentalti);
 #endif //DATA_DEBUG
 
-    if (displayLowUpdateState) screen.altiDigit->setValue(currentalti);
+    if (displayLowUpdateState) {
+      screen.altiDigit->setValue(currentalti);
+      #ifdef AGL_MANAGER_H
+      aglManager.setAlti(currentalti);
+      #endif
+    }
 
 //**********************************************************
 //  DISPLAY VARIO
@@ -2228,7 +2231,9 @@ void loop() {
       SerialPort.println(longitude);
 #endif //DATA_DEBUG     
       DUMPLOG(LOG_TYPE_DEBUG, DATA_DEBUG_LOG, longitude);
+      #ifdef AGL_MANAGER_H
       aglManager.setLongitude(nmeaParser.getLong());
+      #endif
 //      screen.gpsLongDir->setValue(String(nmeaParser.getLongDir()));
 //      screen.gpsLong->setValue(nmeaParser.getLong());
       screen.gpsLong->setValue(nmeaParser.getLongDegree());
@@ -2241,19 +2246,21 @@ void loop() {
       SerialPort.println(latitude);
 #endif //DATA_DEBUG     
       DUMPLOG(LOG_TYPE_DEBUG, DATA_DEBUG_LOG, latitude);
+      #ifdef AGL_MANAGER_H
       aglManager.setLatitude(nmeaParser.getLat());
+      #endif
 //      screen.gpsLatDir->setValue(String(nmeaParser.getLatDir()));
 //      screen.gpsLat->setValue(nmeaParser.getLat());
       screen.gpsLat->setValue(nmeaParser.getLatDegree());
     }
-
-      int currentHeight = aglManager.getHeight();
+    #ifdef AGL_MANAGER_H
+      double currentHeight = aglManager.getHeight();
 #ifdef PROG_DEBUG
       SerialPort.print("Height : ");
       SerialPort.println(currentHeight);
 #endif //PROG_DEBUG     
-
       screen.heightDigit->setValue(currentHeight);
+      #endif
   }
    
   displayLowUpdateState = false;

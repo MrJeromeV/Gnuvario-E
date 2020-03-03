@@ -15,9 +15,9 @@ public:
 private:
     void computeHeight();
     HGTReader *hgtReader;
-    double currentAlti;
-    double currentLong;
-    double currentLat;
+    double currentAlti = -1;
+    double currentLong = -1;
+    double currentLat = -1;
     double currentHeight;
 };
 
