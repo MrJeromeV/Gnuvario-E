@@ -56,6 +56,7 @@
 
 #include <toneHAL.h>
 #include <beeper.h>
+#include <digit.h>
 
 #ifdef HAVE_SDCARD
 #include <sdcardHAL.h>

@@ -82,14 +82,12 @@
 
 boolean VarioSettings::initSettings(bool initSD) {
 
-  SerialPort.println("initSettings " + initSD);
-
 #ifdef HAVE_SDCARD
 	if (initSD) {
     if (!SDHAL.begin()) {
-//#ifdef SDCARD_DEBUG
-      SerialPort.println("SDCard initialization failed!");
-//#endif //SDCARD_DEBUG
+#ifdef SDCARD_DEBUG
+      SerialPort.println("initialization failed!");
+#endif //SDCARD_DEBUG
       return false;
     }
 	}
@@ -97,9 +95,9 @@ boolean VarioSettings::initSettings(bool initSD) {
 	
 	EEPROMHAL.init(1024);
   if (!EEPROMHAL.isValid()) {
-//#ifdef EEPROM_DEBUG
-      SerialPort.println("EEProm initialization failed!");
-//#endif //EEPROM_DEBUG
+#ifdef EEPROM_DEBUG
+      SerialPort.println("initialization failed!");
+#endif //EEPROM_DEBUG
       return false;
     }
  		

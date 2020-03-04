@@ -1422,6 +1422,7 @@ void loop() {
 //**********************************************************
 //  ACQUISITION DES DONNEES
 //**********************************************************
+
 #ifdef HAVE_ACCELEROMETER
 #ifdef TWOWIRESCHEDULER
   if( twScheduler.havePressure() && twScheduler.haveAccel() ) {
@@ -2225,6 +2226,7 @@ void loop() {
     }
 
     if (nmeaParser.haveLongitude()) {
+
       String longitude = nmeaParser.getLongitude();      
 #ifdef DATA_DEBUG
       SerialPort.print("Longitude : ");
@@ -2240,6 +2242,7 @@ void loop() {
     }
 
     if (nmeaParser.haveLatitude()) {
+
       String latitude = nmeaParser.getLatitude();
 #ifdef DATA_DEBUG
       SerialPort.print("Latitude : ");

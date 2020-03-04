@@ -20,6 +20,7 @@
 
 #include <LK8Sentence.h>
 #include <Arduino.h>
+#include <digit.h>
 
 const char lk8Tag[] PROGMEM = LK8_SENTENCE_TAG;
 

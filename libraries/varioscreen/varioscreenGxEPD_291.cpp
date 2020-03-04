@@ -43,6 +43,7 @@
  *	                    VARIOSCREEN_SIZE == 291									 *
  *    1.0.12 23/02/20   Ajout d'objets texte (compass, Lat, Long), changement    *
  *					    de taille de texte                                       *
+ *    1.0.13 25/02/20   Ajout ScreenBackground                                   *
  *********************************************************************************/
  
  /*
@@ -303,6 +304,7 @@ void VarioScreen::createScreenObjects(void)
 void VarioScreen::createScreenObjectsPage0(void) {
 //****************************************************************************************************************************
 	altiDigit = new ScreenDigit(VARIOSCREEN_ALTI_ANCHOR_X, VARIOSCREEN_ALTI_ANCHOR_Y, 4, 0, false, false, ALIGNRIGHT, true, DISPLAY_OBJECT_ALTI, FONTNORMAL);
+	heightDigit = new ScreenDigit(VARIOSCREEN_ALTI_ANCHOR_X, VARIOSCREEN_ALTI_ANCHOR_Y, 4, 0, false, false, ALIGNRIGHT, true, DISPLAY_OBJECT_ALTI, FONTLARGE);
 	munit = new MUnit(VARIOSCREEN_ALTI_UNIT_ANCHOR_X, VARIOSCREEN_ALTI_ANCHOR_Y-2);
 	varioDigit = new ScreenDigit(VARIOSCREEN_VARIO_ANCHOR_X, VARIOSCREEN_VARIO_ANCHOR_Y, 4, 1, true, false,  ALIGNRIGHT, true, DISPLAY_OBJECT_VARIO, FONTNORMAL);
 
@@ -335,13 +337,10 @@ void VarioScreen::createScreenObjectsPage0(void) {
 	
 	//separationline = new SeparationLine(VARIOSCREEN_SEPARATIONLINE_ANCHOR_X, VARIOSCREEN_SEPARATIONLINE_ANCHOR_Y);
 	
-	
-		
-	
-	bgline1 = new BGLine(1, 25, 127, 25 );
+/*	bgline1 = new BGLine(1, 25, 127, 25 );
 	bgline2 = new BGLine(1, 26, 127, 26);
 	bgline3 = new BGLine(1, 27, 127, 27);
-	bgline4 = new BGLine(1, 28, 127, 28);	
+	bgline4 = new BGLine(1, 28, 127, 28);	*/
 	
 	wind = new WIND(VARIOSCREEN_WIND_ANCHOR_X, VARIOSCREEN_WIND_ANCHOR_Y);
 	
@@ -378,7 +377,8 @@ void VarioScreen::createScreenObjectsDisplayPage0(void) {
 //****************************************************************************************************************************
 //	CreateObjectDisplay(DISPLAY_OBJECT_TENSION, tensionDigit, 0, 0, true); 
 //	CreateObjectDisplay(DISPLAY_OBJECT_TEMPRATURE, tempratureDigit, 0, 2, true); 
-		CreateObjectDisplay(DISPLAY_OBJECT_ALTI							, altiDigit					    , 0, 0, true); 
+		CreateObjectDisplay(DISPLAY_OBJECT_ALTI							, altiDigit					    , 0, 1, true); 
+		CreateObjectDisplay(DISPLAY_OBJECT_HEIGHT						, heightDigit				, 0, 2, true);
 		CreateObjectDisplay(DISPLAY_OBJECT_MUNIT						, munit						 	    , 0, 0, true); 
 		CreateObjectDisplay(DISPLAY_OBJECT_VARIO						, varioDigit				    , 0, 0, true); 
 		CreateObjectDisplay(DISPLAY_OBJECT_MSUNIT						, msunit						    , 0, 0, true); 
@@ -413,10 +413,10 @@ void VarioScreen::createScreenObjectsDisplayPage0(void) {
 		CreateObjectDisplay(DISPLAY_OBJECT_FIXGPSINFO				, fixgpsinfo				, 0, 0, true); 
 		CreateObjectDisplay(DISPLAY_OBJECT_BTINFO					, btinfo			     	  , 0, 0, true); 
 
-		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline1           , 0, 0, false);
+/*		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline1           , 0, 0, false);
 		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline2           , 0, 0, false);
 		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline3           , 0, 0, false);
-		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline4           , 0, 0, false);
+		CreateObjectDisplay(DISPLAY_OBJECT_LINE	          	, bgline4           , 0, 0, false);*/
 
 		CreateObjectDisplay(DISPLAY_OBJECT_WIND         		, wind          		, 1, 0, true);				
 		
@@ -460,6 +460,33 @@ void VarioScreen::createScreenObjectsDisplayPage1(void) {
 		CreateObjectDisplay(DISPLAY_OBJECT_BTINFO						, btinfo						, 1, 0, true); 
 		CreateObjectDisplay(DISPLAY_OBJECT_KMHUNIT				  , kmhunit								, 1, 0, true); 
 		CreateObjectDisplay(DISPLAY_OBJECT_SPEED						, speedDigit				    , 1, 0, true); 
+}	
+
+
+//****************************************************************************************************************************
+void VarioScreen::ScreenBackground(int8_t page)
+//****************************************************************************************************************************
+{
+	switch (page) {
+	  case 0:		
+			display.drawLine(0, 45, 128, 45, GxEPD_BLACK);
+			display.drawLine(0, 95, 128, 95, GxEPD_BLACK);
+			display.drawLine(0, 150, 128, 150, GxEPD_BLACK);
+			display.drawLine(0, 200, 128, 200, GxEPD_BLACK);
+			display.drawLine(0, 250, 128, 250, GxEPD_BLACK);
+			display.drawLine(75, 150, 75, 200, GxEPD_BLACK);
+			break;
+	  case 1:
+			display.drawLine(0, 45, 128, 45, GxEPD_BLACK);
+			display.drawLine(0, 95, 128, 95, GxEPD_BLACK);
+			display.drawLine(0, 150, 128, 150, GxEPD_BLACK);
+			display.drawLine(0, 200, 128, 200, GxEPD_BLACK);
+			display.drawLine(0, 250, 128, 250, GxEPD_BLACK);
+			display.drawLine(75, 150, 75, 200, GxEPD_BLACK);
+			break;
+	  default:
+			break;
+	}
 }	
 
 //****************************************************************************************************************************
@@ -531,11 +558,6 @@ void genericTask( void * parameter ){
   stateDisplay = STATE_OK;
   vTaskDelete(taskDisplay);
 }
-
-
-
-
-
 
 //****************************************************************************************************************************
 void VarioScreen::updateScreen (void)
@@ -758,6 +780,7 @@ void VarioScreen::ScreenViewPage(int8_t page, boolean clear, boolean refresh)
 
 	if (refresh) {
 		altiDigit->update(true);
+		heightDigit->update(true);
 		varioDigit->update(true);
 		speedDigit->update(true);
 		ratioDigit->update(true);
@@ -787,6 +810,7 @@ void VarioScreen::ScreenViewPage(int8_t page, boolean clear, boolean refresh)
 	}
 	else {		
 		altiDigit->setValue(9999);
+		heightDigit->setValue(9999);
 		varioDigit->setValue(0.0);
 		speedDigit->setValue(0);
 		ratioDigit->setValue(0);
@@ -1574,6 +1598,9 @@ void ScreenScheduler::displayStep(void) {
 //		display.fillRect(0, 0, display.width(), display.height(), GxEPD_WHITE);
 		//.clearScreen();
 	}
+	
+	
+	screen.ScreenBackground(currentPage);
 	
 #ifdef SCREEN_DEBUG
   SerialPort.println("displayStep : Display");

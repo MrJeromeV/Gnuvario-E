@@ -40,6 +40,7 @@
  *    1.0.10 09/02/20   Modif écran 1 - font normal / coordonné GPS en degrés    *
  *    1.0.11 17/02/20   Ajout 2.90 et 2.91                                       *
  *                      Ajout FONTLARGE / FONTNORMAL                             *
+ *    1.0.12 25/02/20   Ajout ScreenBackground                                   *
  *                                                                               *
  *********************************************************************************/
 
@@ -151,6 +152,7 @@ class VarioScreen {
 	ScreenDigit* tempratureDigit; 
 	
 	ScreenDigit* altiDigit;
+	ScreenDigit* heightDigit;
 	
 	MUnit* munit;
 	ScreenDigit* varioDigit;
@@ -237,6 +239,7 @@ class VarioScreen {
 	void ScreenViewReboot(String message = "");
   void ScreenViewSound(int volume);	
 	void ScreenViewMessage(String message, int delai);
+	void ScreenBackground(int8_t page);
 		
 	void CreateObjectDisplay(int8_t ObjectDisplayTypeID, VarioScreenObject* object, int8_t page, int8_t multiDisplayID, boolean actif); 
 	void updateData(int8_t ObjectDisplayTypeID, double data);

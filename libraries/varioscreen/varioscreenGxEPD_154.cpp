@@ -38,6 +38,7 @@
  *    1.0.8  28/01/20   Modification écran 1 - ajout info gps                    *
  *    1.0.9  09/02/20   Modif écran 1 - font normal / coordonné GPS en degrés    *
  *    1.0.10 17/02/20   Ajout large (font) varioscreenDigit                      *
+ *    1.0.11 25/02/20   Ajout ScreenBackground                                   *
  *                                                                               *
  *********************************************************************************/
  
@@ -169,7 +170,7 @@ volatile uint8_t stateMulti = 0;
 #define VARIOSCREEN_SAT_ANCHOR_X 164
 #define VARIOSCREEN_SAT_ANCHOR_Y 0
 #define VARIOSCREEN_SAT_FIX_ANCHOR_X 176
-#define VARIOSCREEN_SAT_FIX_ANCHOR_Y 32
+#define VARIOSCREEN_SAT_FIX_ANCHOR_Y 38    //32
 #define VARIOSCREEN_TIME_ANCHOR_X 198
 #define VARIOSCREEN_TIME_ANCHOR_Y 190
 #define VARIOSCREEN_ELAPSED_TIME_ANCHOR_X 198
@@ -448,6 +449,22 @@ void VarioScreen::createScreenObjectsDisplayPage1(void) {
 }	
 
 //****************************************************************************************************************************
+void VarioScreen::ScreenBackground(int8_t page)
+//****************************************************************************************************************************
+{
+	switch (page) {
+	  case 0:
+			display.drawLine(0, 35, 200, 35, GxEPD_BLACK);
+			break;
+	  case 1:
+			display.drawLine(0, 35, 200, 35, GxEPD_BLACK);
+			break;
+	  default:
+			break;
+	}
+}
+
+//****************************************************************************************************************************
 void VarioScreen::begin(void)
 //****************************************************************************************************************************
 {
@@ -677,10 +694,7 @@ void VarioScreen::ScreenViewInit(uint8_t Version, uint8_t Sub_Version, String Au
 	unsigned long TmplastDisplayTimestamp = millis();
 	int compteur = 0;
 	while (compteur < 3) {
-
-//TODO JVL
-		//ButtonScheduleur.update();
-
+		ButtonScheduleur.update();
 		if (ButtonScheduleur.Get_StatePage() == STATE_PAGE_CALIBRATION) break;
 		
 		if( millis() - TmplastDisplayTimestamp > 1000 ) {
@@ -1556,6 +1570,9 @@ void ScreenScheduler::displayStep(void) {
 //		display.fillRect(0, 0, display.width(), display.height(), GxEPD_WHITE);
 		//.clearScreen();
 	}
+	
+	
+	screen.ScreenBackground(currentPage);
 	
 #ifdef SCREEN_DEBUG
   SerialPort.println("displayStep : Display");

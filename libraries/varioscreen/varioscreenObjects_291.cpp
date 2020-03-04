@@ -57,7 +57,8 @@
  *    1.1.10 16/02/20   Adaptation écran 2.9" mode portrait						 *
  *						VARIOSCREEN_SIZE == 291              					 *	
  *    1.1.11 21/02/20   Correction bug affichage batterie                        *
- *    1.1.12 23/02/20   Ajout d'objets texte (compass, Lat, Long), changement    *
+ *    1.0.12 19/02/20   Ajout variolog                                           *
+ *    1.1.13 23/02/20   Ajout d'objets texte (compass, Lat, Long), changement    *
  *					    de taille de texte                                       *
  *********************************************************************************/
  /*
@@ -90,6 +91,8 @@
 
 #define ARDUINOTRACE_SERIAL SerialPort
 #include <ArduinoTrace.h>
+
+#include <VarioLog.h>
 
 //#include <avr\dtostrf.h>
 #include <stdlib.h>
@@ -356,12 +359,9 @@ ScreenDigit::ScreenDigit(uint16_t anchorX, uint16_t anchorY, uint16_t width, uin
 //****************************************************************************************************************************
   lastDisplayWidth = 0; 
 
-  if (large) {display.setFont(&FreeSansBold9pt7b);
-   	display.setTextSize(1);
-  }
-  else {display.setFont(&FreeSansBold9pt7b);			
-  display.setTextSize(1);
-  }
+  display.setFont(&FreeSansBold9pt7b);
+  if (large) display.setTextSize(1);
+  else display.setTextSize(1);
 
   int16_t box_x = anchorX;
   int16_t box_y = anchorY;
@@ -426,7 +426,7 @@ ScreenDigit::ScreenDigit(uint16_t anchorX, uint16_t anchorY, uint16_t width, uin
 	}
 
   if (large) Zheight  = 18+6;  //Hauteur des caractères + espace
-  else       Zheight  = 18+6;
+  else       Zheight  = 9+3;
 
     switch (displayTypeID) {
 		case DISPLAY_OBJECT_SPEED :
@@ -482,6 +482,10 @@ case DISPLAY_OBJECT_BEARING :
 			MaxHeight  = Zheight;
 			break;
 		
+		default :
+		  MaxWidth   = Zwidth;
+			MaxHeight  = Zheight;
+			break;
 		}
 }
 
@@ -778,7 +782,9 @@ void ScreenDigit::show() {
 //			
 			display.drawInvertedBitmap(titleX, titleY-6, beartext, 42, 11, GxEPD_BLACK); 
 			break;
-		
+    case DISPLAY_OBJECT_HEIGHT :
+			display.drawInvertedBitmap(titleX-95, titleY-14, heighttext, 32, 14, GxEPD_BLACK);
+			break;		
 			
 			
 			
@@ -787,17 +793,6 @@ void ScreenDigit::show() {
 			break;
 		}
 	}
-		display.drawLine(0, 45, 128, 45, GxEPD_BLACK);
-		display.drawLine(0, 95, 128, 95, GxEPD_BLACK);
-		display.drawLine(0, 150, 128, 150, GxEPD_BLACK);
-		display.drawLine(0, 200, 128, 200, GxEPD_BLACK);
-		display.drawLine(0, 250, 128, 250, GxEPD_BLACK);
-		display.drawLine(75, 150, 75, 200, GxEPD_BLACK);
-	
-		
-		
-		
-		
 }
 
 /*
@@ -1159,7 +1154,10 @@ ScreenText::ScreenText(uint16_t anchorX, uint16_t anchorY, uint16_t width, bool 
 			MaxHeight  = Zheight;
 			break;	
 
-		
+		default :
+		  MaxWidth   = Zwidth;
+			MaxHeight  = Zheight;
+			break;
 		}
 }
 
@@ -1742,6 +1740,8 @@ b=0.386384
   SerialPort.println(voltage);
 #endif //SCREEN_DEBUG
 
+	DUMP(voltage);
+	DUMPLOG(LOG_TYPE_DEBUG, VOLTAGE_DEBUG_LOG,voltage);
   Voltage = voltage;
 	
 #if not defined(SIMPLE_VOLTAGE_VIEW)
@@ -1760,6 +1760,13 @@ b=0.386384
   SerialPort.print("pVoltage : ");
   SerialPort.println(pVoltage);
 #endif //SCREEN_DEBUG
+
+#if defined(VOLTAGE_DIVISOR_DEBUG)
+  float percentage = 2808.3808 * pow(voltage, 4) - 43560.9157 * pow(voltage, 3) + 252848.5888 * pow(voltage, 2) - 650767.4615 * voltage + 626532.5703;
+  if (voltage > 4.19) percentage = 100;
+  else if (voltage <= 3.50) percentage = 0;
+  SerialPort.println(String(percentage)+"%");
+#endif //VOLTAGE_DIVISOR_DEBUG
 #endif //SIMPLE_VOLTAGE_VIEW
   
   reset();
@@ -1797,11 +1804,14 @@ if    X< 1700 = deep sleep (comme ça si la sécu batterie ne fonctionne pas ou 
   /* battery level */
  /* uint16_t baseVoltage = base + inc;
   uint8_t pixelCount = 0;*/
-#ifdef SCREEN_DEBUG
+#ifdef VOLTAGE_DIVISOR_DEBUG
   SerialPort.println("Show : BatLevel");
 #endif //SCREEN_DEBUG
 
 #if defined (SIMPLE_VOLTAGE_VIEW)
+
+	DUMP(Voltage);
+	DUMPLOG(LOG_TYPE_DEBUG, VOLTAGE_DEBUG_LOG,Voltage);
 
   display.fillRect(posX, posY, 32, 32, GxEPD_WHITE);
 
@@ -1819,7 +1829,7 @@ if    X< 1700 = deep sleep (comme ça si la sécu batterie ne fonctionne pas ou 
 	}
 
 #else //SIMPLE_VOLTAGE_VIEW
-#ifdef SCREEN_DEBUG
+#ifdef VOLTAGE_DIVISOR_DEBUG
   SerialPort.print("uVoltage : ");
   SerialPort.println(uVoltage);
 #endif //SCREEN_DEBUG

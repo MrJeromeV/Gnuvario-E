@@ -20,6 +20,7 @@
 
 #include <LxnavSentence.h>
 #include <Arduino.h>
+#include <digit.h>
 
 const char lxnavTag[] PROGMEM = LXNAV_SENTENCE_TAG;
 

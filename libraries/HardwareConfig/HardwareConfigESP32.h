@@ -158,11 +158,6 @@ Fly stat        0xD0		26+2
 #define SDCARD_MISO_PIN 2
 #define SDCARD_SCK_PIN  14
 
-// #define SDCARD_CS_PIN   5
-// #define SDCARD_MOSI_PIN 23
-// #define SDCARD_MISO_PIN 19
-// #define SDCARD_SCK_PIN  18
-
 #define SDFAT_LIB
 
 /***************************/

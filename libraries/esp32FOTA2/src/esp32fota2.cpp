@@ -327,15 +327,17 @@ bool esp32FOTA2::execHTTPexist()
     TRACE();
     String useURL;
 
-    if (useDeviceID)
-    {
-        // String deviceID = getDeviceID() ;
-        useURL = checkURL + "?id=" + getDeviceID();
-    }
-    else
-    {
-        useURL = checkURL;
-    }
+    // if (useDeviceID)
+    // {
+    //     // String deviceID = getDeviceID() ;
+    //     useURL = checkURL + "/" + getDeviceID();
+    // }
+    // else
+    // {
+    //     useURL = checkURL;
+    // }
+
+    useURL = checkURL + "/" + getDeviceID();
 
     WiFiClient client;
     _port = 80;
@@ -467,15 +469,17 @@ uint8_t esp32FOTA2::execHTTPcheck(bool betaVersion)
     TRACE();
     String useURL;
 
-    if (useDeviceID)
-    {
-        // String deviceID = getDeviceID() ;
-        useURL = checkURL + "?id=" + getDeviceID();
-    }
-    else
-    {
-        useURL = checkURL;
-    }
+    // if (useDeviceID)
+    // {
+    //     // String deviceID = getDeviceID() ;
+    //     useURL = checkURL + "?id=" + getDeviceID();
+    // }
+    // else
+    // {
+    //     useURL = checkURL;
+    // }
+
+    useURL = checkURL + "/" + getDeviceID();
 
     WiFiClient client;
     _port = 80;
@@ -546,6 +550,8 @@ uint8_t esp32FOTA2::execHTTPcheck(bool betaVersion)
                 const char *plhost = JSONDocumentUpdate["host"];
                 _port = JSONDocumentUpdate["port"];
 
+                NB_WWW_FILES = 0;
+
                 if (JSONDocumentUpdate.containsKey("www"))
                 {
 
@@ -562,10 +568,6 @@ uint8_t esp32FOTA2::execHTTPcheck(bool betaVersion)
                         _wwwfiles[NB_WWW_FILES] = myValue.as<char *>();
                         NB_WWW_FILES++;
                     }
-                }
-                else
-                {
-                    NB_WWW_FILES = 0;
                 }
 
 #ifdef WIFI_DEBUG
@@ -810,7 +812,7 @@ String esp32FOTA2::getHTTPVersion()
 
     int8_t updatedNeeded = execHTTPcheck(false);
 
-    if (updatedNeeded >= 0)
+    if (updatedNeeded > 0)
     {
 #ifdef WIFI_DEBUG
         SerialPort.println("************** Version Stable : Mise à jour disponible *****************");
@@ -829,7 +831,7 @@ String esp32FOTA2::getHTTPVersion()
     }
 
     updatedNeeded = execHTTPcheck(true);
-    if (updatedNeeded >= 0)
+    if (updatedNeeded > 0)
     {
 #ifdef WIFI_DEBUG
         SerialPort.println("***************** Version Beta : Mise à jour disponible *********************");
@@ -1004,7 +1006,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
 				SdFile root;
 				SdFile file;
 
-				if (!root.open("wwwold")) {
+            if (!root.open("wwwold"))
+            {
 #ifdef WIFI_DEBUG
 					SerialPort.println("[HTTP] impossible d'ouvrir le dossier wwwold");
 #endif
@@ -1013,7 +1016,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
 				// Open next file in root.
 				// Warning, openNext starts at the current directory position
 				// so a rewind of the directory may be required.
-				while (file.openNext(&root, O_RDONLY)) {
+            while (file.openNext(&root, O_RDONLY))
+            {
 
 					char fBuffer[32];
 					file.getName(fBuffer, 30);
@@ -1027,7 +1031,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
 
 					file.close();
 		
-				  if (!SDHAL_SD.remove(SBuffer.c_str())) {
+                if (!SDHAL_SD.remove(SBuffer.c_str()))
+                {
 #ifdef WIFI_DEBUG
 						SerialPort.println("[HTTP] le fichier n'a pas pu être supprimé");
 #endif
@@ -1036,7 +1041,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
 				
 			//Effacement du repertoire wwwold
 			
-			  if (!SDHAL_SD.rmdir(newPath.c_str())) {
+            if (!SDHAL_SD.rmdir(newPath.c_str()))
+            {
 #ifdef WIFI_DEBUG
 			    SerialPort.println("[HTTP] le dossier wwwold n'a pas pu être supprimé");
 #endif
@@ -1045,7 +1051,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
 		  }
 
       // rename "www" into "wwwold"
-		  if (!SDHAL_SD.rename("www", "wwwold")) {
+        if (!SDHAL_SD.rename("www", "wwwold"))
+        {
 #ifdef WIFI_DEBUG
 				SerialPort.println("[HTTP] le dossier www ne peut être renomé en wwwold");
 #endif
@@ -1053,7 +1060,8 @@ bool esp32FOTA2::UpdateWwwDirectory()
       }
 
       // rename "www" into "wwwold"
-		  if (!SDHAL_SD.rename("wwwnew", "www")) {
+        if (!SDHAL_SD.rename("wwwnew", "www"))
+        {
 #ifdef WIFI_DEBUG
 				SerialPort.println("[HTTP] le dossier wwwnew ne peut être renomé en www");
 #endif
