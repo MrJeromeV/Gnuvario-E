@@ -11,14 +11,21 @@ public:
     void setLatitude(double dLatitude);
     void setLongitude(double dLongitude);
     double getHeight() { return currentHeight; }
+		boolean IsOk(void); 
+		void init(void);
 
 private:
     void computeHeight();
+    static float degMinToDeg(float value);
+
     HGTReader *hgtReader;
     double currentAlti = -1;
     double currentLong = -1;
     double currentLat = -1;
     double currentHeight;
+		boolean Directory_AGL_Exists = false;
 };
+
+extern   AglManager aglManager;
 
 #endif //AGL_MANAGER_H

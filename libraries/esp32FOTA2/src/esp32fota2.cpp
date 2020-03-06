@@ -975,109 +975,109 @@ void esp32FOTA2::downloadWwwFiles()
 bool esp32FOTA2::UpdateWwwDirectory()
 //************************************
 {
-	
-	TRACE();
+
+    TRACE();
 
 #ifdef WIFI_DEBUG
-  SerialPort.println("[HTTP] Debut méthode updateWwwDirectory");
+    SerialPort.println("[HTTP] Debut méthode updateWwwDirectory");
 #endif
     // File system object.
     // Directory file.
     SdFile root;
 
     String newPath = "wwwnew";
-//		String oldPath = "";
+    //		String oldPath = "";
     DUMP(newPath.c_str());
     if (SDHAL_SD.exists(newPath.c_str()))
     {
 #ifdef WIFI_DEBUG
-      SerialPort.println("[HTTP] le dossier wwwnew existe");
+        SerialPort.println("[HTTP] le dossier wwwnew existe");
 #endif
 
-		// Traitement du fichier wwwnew
+        // Traitement du fichier wwwnew
 
-      newPath = "wwwold";
-      if (SDHAL_SD.exists(newPath.c_str()))
-      {
+        newPath = "wwwold";
+        if (SDHAL_SD.exists(newPath.c_str()))
+        {
 #ifdef WIFI_DEBUG
-        SerialPort.println("[HTTP] le dossier wwwold existe");
+            SerialPort.println("[HTTP] le dossier wwwold existe");
 #endif
 
-				SdFile root;
-				SdFile file;
+            SdFile root;
+            SdFile file;
 
             if (!root.open("wwwold"))
             {
 #ifdef WIFI_DEBUG
-					SerialPort.println("[HTTP] impossible d'ouvrir le dossier wwwold");
+                SerialPort.println("[HTTP] impossible d'ouvrir le dossier wwwold");
 #endif
-          return false;
-				}
-				// Open next file in root.
-				// Warning, openNext starts at the current directory position
-				// so a rewind of the directory may be required.
+                return false;
+            }
+            // Open next file in root.
+            // Warning, openNext starts at the current directory position
+            // so a rewind of the directory may be required.
             while (file.openNext(&root, O_RDONLY))
             {
 
-					char fBuffer[32];
-					file.getName(fBuffer, 30);
-					String SBuffer = "wwwold/";
-					SBuffer += String(fBuffer);
+                char fBuffer[32];
+                file.getName(fBuffer, 30);
+                String SBuffer = "wwwold/";
+                SBuffer += String(fBuffer);
 
 #ifdef WIFI_DEBUG
-					SerialPort.print("[HTTP] suppression du fichier : ");
-					SerialPort.println(SBuffer);
+                SerialPort.print("[HTTP] suppression du fichier : ");
+                SerialPort.println(SBuffer);
 #endif
 
-					file.close();
-		
+                file.close();
+
                 if (!SDHAL_SD.remove(SBuffer.c_str()))
                 {
 #ifdef WIFI_DEBUG
-						SerialPort.println("[HTTP] le fichier n'a pas pu être supprimé");
+                    SerialPort.println("[HTTP] le fichier n'a pas pu être supprimé");
 #endif
-			    }
-				}
-				
-			//Effacement du repertoire wwwold
-			
+                }
+            }
+
+            //Effacement du repertoire wwwold
+
             if (!SDHAL_SD.rmdir(newPath.c_str()))
             {
 #ifdef WIFI_DEBUG
-			    SerialPort.println("[HTTP] le dossier wwwold n'a pas pu être supprimé");
+                SerialPort.println("[HTTP] le dossier wwwold n'a pas pu être supprimé");
 #endif
-				  return false;   //Pas de mise à jour
-			  }
-		  }
+                return false; //Pas de mise à jour
+            }
+        }
 
-      // rename "www" into "wwwold"
+        // rename "www" into "wwwold"
         if (!SDHAL_SD.rename("www", "wwwold"))
         {
 #ifdef WIFI_DEBUG
-				SerialPort.println("[HTTP] le dossier www ne peut être renomé en wwwold");
+            SerialPort.println("[HTTP] le dossier www ne peut être renomé en wwwold");
 #endif
-				return false;   //Pas de mise à jour
-      }
+            return false; //Pas de mise à jour
+        }
 
-      // rename "www" into "wwwold"
+        // rename "www" into "wwwold"
         if (!SDHAL_SD.rename("wwwnew", "www"))
         {
 #ifdef WIFI_DEBUG
-				SerialPort.println("[HTTP] le dossier wwwnew ne peut être renomé en www");
+            SerialPort.println("[HTTP] le dossier wwwnew ne peut être renomé en www");
 #endif
-				return false;   //Pas de mise à jour
-      }
-			
-			return true; // Mise à jour site web OK
-	  }
-  else
-	  {
+            return false; //Pas de mise à jour
+        }
+
+        return true; // Mise à jour site web OK
+    }
+    else
+    {
 #ifdef WIFI_DEBUG
-		   SerialPort.println("[HTTP] le dossier wwwnew n'existe pas");
+        SerialPort.println("[HTTP] le dossier wwwnew n'existe pas");
 #endif
-			 return false;   //Pas de mise à jour
-		}
-  return false;   //Pas de mise à jour
+        return false; //Pas de mise à jour
+    }
+    return false; //Pas de mise à jour
 }
 
 /*{

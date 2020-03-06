@@ -27,8 +27,11 @@
  *    1.0                                                                        *
  *    1.0.1  13/10/19   Ajout Wind                                               *
  *    1.0.2  03/11/19   Ajout l'icone de température  (ratamuse)                 *
+ *    1.0.3  04/03/20   Ajout AGL     											 *
  *                                                                               *
  *********************************************************************************/
+
+
 
 #ifndef VARIOSCREENICONE_154_H
 #define VARIOSCREENICONE_154_H
@@ -119,6 +122,7 @@ const unsigned char logo_gnuvario[] PROGMEM = {
 ,0x00,0x00,0x00,0x00,0x7f,0xfc,0x00,0x00,0x00,0x00,0x00,0x00
 ,0x00,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 ,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };*/
+
 
 // Width=102Pixels, Height=74Pixels
 const unsigned char logo_gnuvario[] PROGMEM = {

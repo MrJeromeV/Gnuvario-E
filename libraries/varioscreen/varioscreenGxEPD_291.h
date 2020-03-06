@@ -40,8 +40,10 @@
  *    1.0.10 09/02/20   Modif écran 1 - font normal / coordonné GPS en degrés    *
  *    1.0.11 17/02/20   Ajout 2.90 et 2.91                                       *
  *    1.0.12 25/02/20   Ajout ScreenBackground                                   *
+ *    1.0.13 05/03/20   Ajout affichage alti agl                                 *
  *                                                                               *
  *********************************************************************************/
+
 
 #ifndef VARIOSCREENGXEPD_291_H
 #define VARIOSCREENGXEPD_291_H

@@ -306,6 +306,9 @@ SimpleBLE ble;
 *                                    Nouveau site web embarqué                                        *
 *                                    Mise à jour calibration                                          *
 *               01/03/20             Correction affichage lat/long                                    *
+*               04/03/20             Ajout AGL                                                        *
+*               05/03/20             Correction ecran qui clignote                                    *
+*                                    AJOUT - Champs enable AGL                                        *
 *******************************************************************************************************
 *                                                                                                     *
 *                                   Developpement a venir                                             *
@@ -323,7 +326,11 @@ SimpleBLE ble;
 * MODIF - Modification librairie varioscreen - MAJ GxEpd2                                             *
 * VERIF - Seuil déclenchement début du vol                                                            *
 * VERIF - Sensibilité du vario                                                                        *
-*                                                                                                     *
+* BUG   - Problème d'effacement alti                                                                  *
+* AJOUT - Champs enable AGL dans site Web                                                             *
+* AJOUT - déclenchement manuel de l'enregistrement                                                    *
+* BUG   - AGL                                                                                         *                                                                                                    *
+*                                                                                                     *        
 * v0.8                                                                                                *       
 * MODIF - Réecrire loop                                                                               *
 * AJOUT - Récupération du cap depuis le capteur baromètrique                                          *
@@ -398,6 +405,7 @@ SimpleBLE ble;
  * - Ajout Update via internet                                          *
  * - Ajout affichage du cap, longitude, latitude                        *
  * - Calibration des accèlerometres                                     *
+ * - AGL                                                                *
  *                                                                      *
  ************************************************************************/
  
@@ -984,6 +992,12 @@ void setup() {
 
   INFOLOG(tmpStr);
   TRACELOG(LOG_TYPE_DEBUG, MAIN_DEBUG_LOG);
+
+//***********************************************
+// INIT AGL
+//***********************************************
+
+  aglManager.init();
   
   /***************/
   /* init screen */
@@ -1422,7 +1436,6 @@ void loop() {
 //**********************************************************
 //  ACQUISITION DES DONNEES
 //**********************************************************
-
 #ifdef HAVE_ACCELEROMETER
 #ifdef TWOWIRESCHEDULER
   if( twScheduler.havePressure() && twScheduler.haveAccel() ) {
@@ -1944,6 +1957,11 @@ void loop() {
       else {  //variometerState == VARIOMETER_STATE_CALIBRATED
         
         /* check flight start condition */
+
+        DUMP(kalmanvert.getVelocity());
+        DUMP(GnuSettings.FLIGHT_START_VARIO_LOW_THRESHOLD);
+        DUMP(GnuSettings.FLIGHT_START_VARIO_HIGH_THRESHOLD);
+        
         if( (millis() > GnuSettings.FLIGHT_START_MIN_TIMESTAMP) &&
             ((GnuSettings.VARIOMETER_RECORD_WHEN_FLIGHT_START) &&   
              ((kalmanvert.getVelocity() < GnuSettings.FLIGHT_START_VARIO_LOW_THRESHOLD) || (kalmanvert.getVelocity() > GnuSettings.FLIGHT_START_VARIO_HIGH_THRESHOLD)) 
@@ -1978,9 +1996,11 @@ void loop() {
         (kalmanvert.getVelocity() < GnuSettings.FLIGHT_START_VARIO_LOW_THRESHOLD || kalmanvert.getVelocity() > GnuSettings.FLIGHT_START_VARIO_HIGH_THRESHOLD) ) {
       variometerState = VARIOMETER_STATE_FLIGHT_STARTED;
       enableflightStartComponents();*/
+
+
       if( (millis() > GnuSettings.FLIGHT_START_MIN_TIMESTAMP) &&
           (((GnuSettings.VARIOMETER_RECORD_WHEN_FLIGHT_START) &&   
-           (kalmanvert.getVelocity() < GnuSettings.FLIGHT_START_VARIO_LOW_THRESHOLD || kalmanvert.getVelocity() > GnuSettings.FLIGHT_START_VARIO_HIGH_THRESHOLD)) || 
+           ((kalmanvert.getVelocity() < GnuSettings.FLIGHT_START_VARIO_LOW_THRESHOLD) || (kalmanvert.getVelocity() > GnuSettings.FLIGHT_START_VARIO_HIGH_THRESHOLD))) || 
            (!GnuSettings.VARIOMETER_RECORD_WHEN_FLIGHT_START))) {
 //        variometerState = VARIOMETER_STATE_FLIGHT_STARTED;
         enableflightStartComponents();      
@@ -2226,7 +2246,6 @@ void loop() {
     }
 
     if (nmeaParser.haveLongitude()) {
-
       String longitude = nmeaParser.getLongitude();      
 #ifdef DATA_DEBUG
       SerialPort.print("Longitude : ");
@@ -2242,7 +2261,6 @@ void loop() {
     }
 
     if (nmeaParser.haveLatitude()) {
-
       String latitude = nmeaParser.getLatitude();
 #ifdef DATA_DEBUG
       SerialPort.print("Latitude : ");

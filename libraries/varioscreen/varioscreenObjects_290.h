@@ -60,6 +60,11 @@
  *    1.0.12 21/02/20   Correction Bug d'affichage batterie                      *
  *********************************************************************************/
 
+
+
+
+
+
 #ifndef VARIOSCREENOBJECTS_290_H
 #define VARIOSCREENOBJECTS_290_H
 

@@ -14,14 +14,11 @@ class HGTReader
 {
 public :
   HGTReader(const String& aglDir);
-  int getGroundLevel(const String& latitude, const String& longitude);
   int getGroundLevel(float latitude, float longitude);
 
 private:
-  String getFileNameForPosition(const String& latitude, const String& longitude);
   String getFileNameForPosition(float latitude, float longitude);
   bool openFile(const String& fileName);
-  int loadGroundLevel(const String& latitude, const String& longitude);
   int loadGroundLevel(float latitude, float longitude);
   int getTileHeight(int x, int y);
   static String rightPad(const String& src, int size, char c);

@@ -147,7 +147,7 @@
 #define MAXW_OBJECT_VARIO 								 	86
 #define MAXW_OBJECT_TIME									 	50
 #define MAXW_OBJECT_SPEED								 		48
-#define MAXW_OBJECT_ALTI									 	105
+#define MAXW_OBJECT_ALTI									 	110
 #define MAXW_OBJECT_DURATION							 	20
 #define MAXW_OBJECT_RATIO       						20
 #define MAXW_OBJECT_TREND      							20

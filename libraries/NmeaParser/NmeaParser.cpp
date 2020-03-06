@@ -395,7 +395,7 @@ double NmeaParser::getLat(void) {
   parserState_unset(HAVE_LAT);
   return ((double)latitude)/NMEA_RMC_LAT_PRECISION;
 }
-
+	
 char NmeaParser::getLatDir(void) {
 	return latDir;
 }
